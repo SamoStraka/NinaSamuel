@@ -1,0 +1,49 @@
+{
+  "days": [
+    {
+      "1": {
+        "type": "poem",
+        "content": "In the quiet of the night, I find my peace,\nThe stars above, a gentle release.\nWhispers of the wind, a soothing song,\nIn this moment, I feel I belong."
+      },
+      "2": {
+        "type": "link",
+        "content": "https://www.example.com"
+      },
+      "3": {
+        "type": "image",
+        "content": "https://static.vecteezy.com/system/resources/previews/027/597/859/non_2x/romantic-couple-silhouetted-against-blurred-background-love-and-valentine-s-concept-free-photo.jpg"
+      },
+      "4": {
+        "type": "image",
+        "content": "/images/sample.svg"
+      },
+      "5": {
+        "type": "audio",
+        "content": "/audio/christmas-message.wav"
+      },
+      "6": {
+        "type": "challenge",
+        "content": "Make your favorite warm drink, put on a cozy song, and take a moment just for yourself."
+      },
+      "7": {
+        "type": "riddle",
+        "content": "What has a face and two hands but no arms or legs?",
+        "answer": "A clock!"
+      },
+      "8": {
+        "type": "coupon",
+        "content": "This little coupon is good for a cozy movie night together.",
+        "image": "/images/cozy-evening-badge.svg"
+      },
+      "9": {
+        "type": "joke",
+        "content": "What do you call a snowman in summer?",
+        "punchline": "A puddle!"
+      },
+      "10": {
+        "type": "fact",
+        "content": "Every snowflake has six sides, thanks to the way water molecules form ice crystals."
+      }
+    }
+  ]
+}

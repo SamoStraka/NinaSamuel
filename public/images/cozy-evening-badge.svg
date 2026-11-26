@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480">
+  <rect width="720" height="480" rx="32" fill="#315746"/>
+  <rect x="22" y="22" width="676" height="436" rx="22" fill="none" stroke="#e8c994" stroke-width="2"/>
+  <path d="M360 76c-12-19-40-8-40 12 0 17 20 31 40 45 20-14 40-28 40-45 0-20-28-31-40-12Z" fill="#d28a7b"/>
+  <text x="360" y="193" text-anchor="middle" fill="#e8c994" font-family="Arial,sans-serif" font-size="18" font-weight="bold" letter-spacing="5">A LITTLE GIFT FOR YOU</text>
+  <text x="360" y="265" text-anchor="middle" fill="#fffaf0" font-family="Georgia,serif" font-size="44">A cozy evening</text>
+  <text x="360" y="308" text-anchor="middle" fill="#e1eadc" font-family="Arial,sans-serif" font-size="21">One movie, warm drinks, and time together</text>
+  <path d="M260 352h200" stroke="#e8c994" stroke-width="1"/>
+  <text x="360" y="392" text-anchor="middle" fill="#e8c994" font-family="Arial,sans-serif" font-size="15" font-weight="bold" letter-spacing="3">REDEEM WITH LOVE</text>
+</svg>
