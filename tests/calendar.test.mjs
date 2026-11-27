@@ -11,16 +11,76 @@ let advent
 let AdventPage
 let AdventEntryView
 let AdventDialog
+let stickers
 
 before(async () => {
   server = await createServer({ server: { middlewareMode: true }, appType: 'custom' })
   scratch = await server.ssrLoadModule('/src/lib/scratch.ts')
   advent = await server.ssrLoadModule('/src/lib/advent.ts')
+  stickers = await server.ssrLoadModule('/src/lib/stickers.ts')
   ;({ default: AdventPage, AdventEntryView, AdventDialog } = await server.ssrLoadModule('/src/pages/AdventPage.tsx'))
 })
 
 after(async () => {
   await server?.close()
+})
+
+for (const value of [0, 0.999]) {
+  test(`stickers appear and disappear on schedule with random value ${value}`, (t) => {
+    t.mock.timers.enable({ apis: ['setTimeout'] })
+    t.mock.method(Math, 'random', () => value)
+    const appearances = []
+    let hidden = 0
+    const stop = stickers.scheduleStickers((sticker) => appearances.push(sticker), () => hidden++)
+    const interval = 20000 + value * 30000
+    const duration = 3000 + value * 7000
+
+    t.mock.timers.tick(interval - 1)
+    assert.equal(appearances.length, 0)
+    t.mock.timers.tick(1)
+    assert.deepEqual(appearances[0], {
+      image: value === 0 ? 'n1.png' : 'n5.png',
+      x: value * 100,
+      y: value * 100,
+      size: 60 + value * 100,
+      duration,
+      destination: value === 0 ? { x: 0, y: 0 } : null,
+    })
+    t.mock.timers.tick(duration - 1)
+    assert.equal(hidden, 0)
+    t.mock.timers.tick(1)
+    assert.equal(hidden, 1)
+    t.mock.timers.tick(interval - duration)
+    assert.equal(appearances.length, 2)
+    stop()
+    t.mock.timers.tick(interval + duration)
+    assert.equal(appearances.length, 2)
+    assert.equal(hidden, 1)
+  })
+}
+
+test('moving stickers can travel in different directions and have varying sizes', (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] })
+  const values = [
+    0, 0.5, 0.2, 0.8, 0.2, 0.1, 0.2, 0.9, 0.1,
+    0, 0.5, 0.8, 0.2, 0.8, 0.9, 0.2, 0.1, 0.9, 0,
+  ]
+  t.mock.method(Math, 'random', () => {
+    assert.ok(values.length > 0, 'unexpected random value requested')
+    return values.shift()
+  })
+  const appearances = []
+  const stop = stickers.scheduleStickers((sticker) => appearances.push(sticker), () => {})
+  t.mock.timers.tick(20000)
+  t.mock.timers.tick(20000)
+  stop()
+  assert.equal(appearances.length, 2)
+  assert.equal(appearances[0].size, 70)
+  assert.equal(appearances[1].size, 150)
+  assert.ok(appearances[0].destination.x > appearances[0].x)
+  assert.ok(appearances[0].destination.y < appearances[0].y)
+  assert.ok(appearances[1].destination.x < appearances[1].x)
+  assert.ok(appearances[1].destination.y > appearances[1].y)
 })
 
 test('scratch coverage measures unique erased area and only reveals after 40 percent', () => {

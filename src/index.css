@@ -20,6 +20,35 @@
 }
 
 @layer components {
+  .sticker-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .floating-sticker {
+    position: absolute;
+    height: auto;
+    max-height: 30svh;
+    object-fit: contain;
+    animation: sticker-appear .4s ease-out;
+  }
+  .floating-sticker.is-moving {
+    animation-name: sticker-drift;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes sticker-appear {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes sticker-drift {
+    to {
+      left: var(--end-x);
+      top: var(--end-y);
+      transform: var(--end-translate);
+    }
+  }
   .festive-shell {
     min-height: 100svh;
     display: flex;
@@ -220,6 +249,7 @@
     .door-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   }
   @media (prefers-reduced-motion: reduce) {
+    .floating-sticker { animation: none; }
     .day-door, .primary-button, .calendar-action { transition: none; }
     .day-door:not(:disabled):hover { transform: none; }
   }
