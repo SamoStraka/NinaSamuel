@@ -3,7 +3,7 @@
     {
       "1": {
         "type": "poem",
-        "content": "In the quiet of the night, I find my peace,\nThe stars above, a gentle release.\nWhispers of the wind, a soothing song,\nIn this moment, I feel I belong."
+        "content": "V tichu noci nachádzam pokoj,\nhviezdy nad hlavou prinášajú úľavu.\nŠepot vetra znie ako nežná pieseň,\nv tejto chvíli cítim, že sem patrím."
       },
       "2": {
         "type": "link",
@@ -23,26 +23,30 @@
       },
       "6": {
         "type": "challenge",
-        "content": "Make your favorite warm drink, put on a cozy song, and take a moment just for yourself."
+        "content": "Priprav si svoj obľúbený teplý nápoj, pusti si príjemnú pesničku a venuj chvíľku len sebe."
       },
       "7": {
         "type": "riddle",
-        "content": "What has a face and two hands but no arms or legs?",
-        "answer": "A clock!"
+        "content": "Čo má ciferník a dve ručičky, ale nemá ruky ani nohy?",
+        "answer": "Hodiny!"
       },
       "8": {
         "type": "coupon",
-        "content": "This little coupon is good for a cozy movie night together.",
+        "content": "Tento malý kupón platí na spoločný útulný filmový večer.",
         "image": "/images/cozy-evening-badge.svg"
       },
       "9": {
         "type": "joke",
-        "content": "What do you call a snowman in summer?",
-        "punchline": "A puddle!"
+        "content": "Čo zostane zo snehuliaka v lete?",
+        "punchline": "Mláka!"
       },
       "10": {
         "type": "fact",
-        "content": "Every snowflake has six sides, thanks to the way water molecules form ice crystals."
+        "content": "Každá snehová vločka má šesť strán vďaka tomu, ako molekuly vody vytvárajú ľadové kryštáliky."
+      },
+      "11": {
+        "type": "quote",
+        "content": "Vianočná radosť je ešte krajšia, keď sa o ňu delíme."
       }
     }
   ]

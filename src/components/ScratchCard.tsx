@@ -23,9 +23,9 @@ export default function ScratchCard({ onReveal, disabled }: { onReveal: () => vo
     context.fillStyle = '#fff8ef'
     context.textAlign = 'center'
     context.font = 'italic 31px Georgia, serif'
-    context.fillText('A little surprise, just for you', SCRATCH_WIDTH / 2, 135)
+    context.fillText('Malé prekvapenie len pre teba', SCRATCH_WIDTH / 2, 135)
     context.font = '20px sans-serif'
-    context.fillText('Scratch here to unwrap', SCRATCH_WIDTH / 2, 178)
+    context.fillText('Zotri a rozbaľ', SCRATCH_WIDTH / 2, 178)
   }, [])
 
   const scratch = (event: PointerEvent<HTMLCanvasElement>, starting = false) => {
@@ -68,7 +68,7 @@ export default function ScratchCard({ onReveal, disabled }: { onReveal: () => vo
     <div className="space-y-4">
       <div className="scratch-cover">
         <div className="absolute inset-0 flex items-center justify-center text-lg text-[#865b52]" aria-hidden="true">
-          Almost unwrapped...
+          Už je takmer rozbalené...
         </div>
         <canvas
           ref={canvas}
@@ -88,11 +88,8 @@ export default function ScratchCard({ onReveal, disabled }: { onReveal: () => vo
           onLostPointerCapture={finish}
         />
       </div>
-      <p className="muted-copy">Scratch with your finger or mouse, or use the button below.</p>
-      <progress aria-label="Scratch progress" className="festive-progress" value={percentage} max={100} />
-      <button type="button" className="calendar-action w-full" disabled={disabled} onClick={onReveal}>
-        Reveal my surprise
-      </button>
+      <p className="muted-copy">Zotri políčko prstom alebo myšou.</p>
+      <progress aria-label="Priebeh stierania" className="festive-progress" value={percentage} max={100} />
     </div>
   )
 }

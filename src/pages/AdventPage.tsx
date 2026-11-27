@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Camera, Check, Download, ExternalLink, Gift, Heart, Lightbulb, LockKeyhole, Music, Puzzle, Smile, Sparkles, X } from 'lucide-react'
+import { Camera, Check, Download, ExternalLink, Gift, Heart, Lightbulb, LockKeyhole, Music, Puzzle, Quote, Smile, Sparkles, X } from 'lucide-react'
 import { FestiveShell } from '@/components/FestiveShell'
 import ScratchCard from '@/components/ScratchCard'
 import { ADVENT_CONTENT_URL } from '@/config'
-import { ADVENT_DAYS, isValidDayOrder, nextUnopenedDay, parseAdventContent, safeLocalMediaUrl, safeMediaUrl, shuffleDays, type AdventContent, type AdventEntry } from '@/lib/advent'
+import { ADVENT_DAYS, isAdventDayAvailable, isValidDayOrder, parseAdventContent, safeLocalMediaUrl, safeMediaUrl, shuffleDays, type AdventContent, type AdventEntry } from '@/lib/advent'
 import { safeHttpUrl } from '@/lib/scratch'
 
 const OPENED_KEY = 'advent-opened-days'
@@ -45,7 +45,7 @@ async function fetchAdventContent(signal: AbortSignal): Promise<AdventContent> {
 export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEntry }) {
   const [imageError, setImageError] = useState(false)
   const [audioError, setAudioError] = useState(false)
-  if (!entry) return <p className="muted-copy">A quiet moment, just for you. Nothing has been added to this day yet.</p>
+  if (!entry) return <p className="muted-copy">Tichá chvíľka len pre teba. Na tento deň zatiaľ nič nepribudlo.</p>
   if (entry.type === 'poem') {
     return (
       <div className="poem-paper">
@@ -60,12 +60,12 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-link">
         <span className="surprise-icon-wrap"><ExternalLink size={24} aria-hidden="true" /></span>
-        <span className="surprise-kicker">SOMETHING LOVELY AWAITS</span>
-        <h3>A little journey</h3>
-        <p className="surprise-card-text">A special surprise is waiting for you just beyond this door.</p>
+        <span className="surprise-kicker">ČAKÁ ŤA NIEČO MILÉ</span>
+        <h3>Malý výlet</h3>
+        <p className="surprise-card-text">Za týmito dvierkami na teba čaká výnimočné prekvapenie.</p>
         {url
-          ? <a href={url} target="_blank" rel="noopener noreferrer" className="primary-button">Open your surprise <ExternalLink size={16} aria-hidden="true" /></a>
-          : <p role="alert">This surprise link is not valid.</p>}
+          ? <a href={url} target="_blank" rel="noopener noreferrer" className="primary-button">Otvoriť prekvapenie <ExternalLink size={16} aria-hidden="true" /></a>
+          : <p role="alert">Odkaz na prekvapenie nie je platný.</p>}
       </div>
     )
   }
@@ -74,12 +74,12 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-audio-card">
         <span className="surprise-icon-wrap"><Music size={25} aria-hidden="true" /></span>
-        <span className="surprise-kicker">A MOMENT TO LISTEN</span>
-        <h3>A message for you</h3>
-        <p className="surprise-card-text">Press play and enjoy a little moment made just for you.</p>
+        <span className="surprise-kicker">CHVÍĽKA NA POČÚVANIE</span>
+        <h3>Odkaz pre teba</h3>
+        <p className="surprise-card-text">Stlač prehrávanie a uži si chvíľku vytvorenú len pre teba.</p>
         {src && !audioError
-          ? <audio className="surprise-audio" controls preload="metadata" src={src} onError={() => setAudioError(true)} aria-label={`Audio message for day ${day}`} />
-          : <p role="alert">The audio message could not be loaded.</p>}
+          ? <audio className="surprise-audio" controls preload="metadata" src={src} onError={() => setAudioError(true)} aria-label={`Zvukový odkaz na deň ${day}`} />
+          : <p role="alert">Zvukový odkaz sa nepodarilo načítať.</p>}
       </div>
     )
   }
@@ -87,8 +87,8 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-challenge">
         <span className="surprise-icon-wrap"><Sparkles size={24} aria-hidden="true" /></span>
-        <span className="surprise-kicker">YOUR LITTLE MISSION</span>
-        <h3>A little challenge</h3>
+        <span className="surprise-kicker">TVOJA MALÁ MISIA</span>
+        <h3>Malá výzva</h3>
         <p className="surprise-card-text">{entry.content}</p>
       </div>
     )
@@ -97,12 +97,12 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-riddle">
         <span className="surprise-icon-wrap"><Puzzle size={24} aria-hidden="true" /></span>
-        <span className="surprise-kicker">SOMETHING TO PONDER</span>
-        <h3>A little riddle</h3>
+        <span className="surprise-kicker">NIEČO NA ZAMYSLENIE</span>
+        <h3>Malá hádanka</h3>
         <p className="surprise-card-text">{entry.content}</p>
         {entry.answer
-          ? <details className="riddle-answer"><summary>Reveal the answer</summary><p>{entry.answer}</p></details>
-          : <p role="alert">The answer has not been configured for this riddle.</p>}
+          ? <details className="riddle-answer"><summary>Odhaliť odpoveď</summary><p>{entry.answer}</p></details>
+          : <p role="alert">Odpoveď na túto hádanku ešte nebola pridaná.</p>}
       </div>
     )
   }
@@ -110,22 +110,32 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-fact">
         <span className="surprise-icon-wrap"><Lightbulb size={24} aria-hidden="true" /></span>
-        <span className="surprise-kicker">A LITTLE SOMETHING TO LEARN</span>
-        <h3>Did you know?</h3>
+        <span className="surprise-kicker">MALÁ ZAUJÍMAVOSŤ</span>
+        <h3>Vedela si?</h3>
         <p className="surprise-card-text">{entry.content}</p>
       </div>
+    )
+  }
+  if (entry.type === 'quote') {
+    return (
+      <blockquote className="surprise-card surprise-quote">
+        <span className="surprise-icon-wrap"><Quote size={24} aria-hidden="true" /></span>
+        <span className="surprise-kicker">SLOVÁ, KTORÉ SI MÔŽEŠ UCHOVAŤ</span>
+        <p className="surprise-card-text">&ldquo;{entry.content}&rdquo;</p>
+        {entry.author && <cite>&mdash; {entry.author}</cite>}
+      </blockquote>
     )
   }
   if (entry.type === 'joke') {
     return (
       <div className="surprise-card surprise-joke">
         <span className="surprise-icon-wrap"><Smile size={26} aria-hidden="true" /></span>
-        <span className="surprise-kicker">A LITTLE CHRISTMAS CHEER</span>
-        <h3>Just for a laugh</h3>
+        <span className="surprise-kicker">TROCHU VIANOČNEJ VESELOSTI</span>
+        <h3>Pre úsmev</h3>
         <p className="surprise-card-text">{entry.content}</p>
         {entry.punchline
-          ? <details className="riddle-answer"><summary>Reveal the punchline</summary><p>{entry.punchline}</p></details>
-          : <p role="alert">The punchline has not been configured for this joke.</p>}
+          ? <details className="riddle-answer"><summary>Odhaliť pointu</summary><p>{entry.punchline}</p></details>
+          : <p role="alert">Pointa tohto vtipu ešte nebola pridaná.</p>}
       </div>
     )
   }
@@ -134,15 +144,15 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
     return (
       <div className="surprise-card surprise-coupon">
         <span className="surprise-icon-wrap"><Gift size={24} aria-hidden="true" /></span>
-        <span className="surprise-kicker">A LITTLE SOMETHING FOR YOU</span>
-        <h3>A gift for you</h3>
+        <span className="surprise-kicker">MALIČKOSŤ PRE TEBA</span>
+        <h3>Darček pre teba</h3>
         <p className="surprise-card-text">{entry.content}</p>
         {src && !imageError
           ? <>
-              <img src={src} alt={`Coupon badge for day ${day}`} className="coupon-image" onError={() => setImageError(true)} />
-              <a href={src} download className="primary-button"><Download size={16} aria-hidden="true" /> Download badge</a>
+              <img src={src} alt={`Obrázok kupónu na deň ${day}`} className="coupon-image" onError={() => setImageError(true)} />
+              <a href={src} download className="primary-button"><Download size={16} aria-hidden="true" /> Stiahnuť kupón</a>
             </>
-          : <p role="alert">The coupon badge could not be loaded. Use a local image path.</p>}
+          : <p role="alert">Obrázok kupónu sa nepodarilo načítať. Použi lokálnu cestu k obrázku.</p>}
       </div>
     )
   }
@@ -150,14 +160,14 @@ export function AdventEntryView({ day, entry }: { day: number; entry?: AdventEnt
   return (
     <figure className="surprise-photo">
       {src && !imageError
-        ? <img src={src} alt={`Surprise for day ${day}`} onError={() => setImageError(true)} />
-        : <p role="alert">The surprise image could not be loaded.</p>}
-      <figcaption><Camera size={15} aria-hidden="true" /> A little moment to keep <Heart size={13} fill="currentColor" aria-hidden="true" /></figcaption>
+        ? <img src={src} alt={`Prekvapenie na deň ${day}`} onError={() => setImageError(true)} />
+        : <p role="alert">Obrázok prekvapenia sa nepodarilo načítať.</p>}
+      <figcaption><Camera size={15} aria-hidden="true" /> Malá chvíľka na pamiatku <Heart size={13} fill="currentColor" aria-hidden="true" /></figcaption>
     </figure>
   )
 }
 
-function AdventDialog({ day, entry, opened, loading, loadError, onReveal, onClose, onRetry }: {
+export function AdventDialog({ day, entry, opened, loading, loadError, onReveal, onClose, onRetry }: {
   day: number
   entry?: AdventEntry
   opened: boolean
@@ -174,20 +184,23 @@ function AdventDialog({ day, entry, opened, loading, loadError, onReveal, onClos
     return () => { element?.close() }
   }, [])
   return (
-    <dialog ref={dialog} onCancel={onClose} aria-labelledby="surprise-title" className="surprise-dialog">
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <p className="eyebrow"><Heart size={13} aria-hidden="true" /> A LITTLE EVERYDAY MAGIC</p>
-          <h2 id="surprise-title" className="surprise-heading mt-2">Day {day}</h2>
+    <dialog ref={dialog} onCancel={onClose} aria-label={`Prekvapenie na deň ${day}`} className="surprise-dialog">
+      <div className="surprise-dialog-header">
+        <div className="surprise-dialog-brand">
+          <span className="surprise-day-heart" aria-hidden="true">
+            <Heart fill="currentColor" strokeWidth={1} />
+            <span>{day}</span>
+          </span>
+          <p className="eyebrow" lang="en">A LITTLE<br /> EVERYDAY MAGIC <Sparkles size={13} aria-hidden="true" /></p>
         </div>
-        <button type="button" autoFocus className="close-button" onClick={onClose} aria-label="Close daily surprise"><X size={20} aria-hidden="true" /></button>
+        <button type="button" autoFocus className="close-button" onClick={onClose} aria-label="Zavrieť prekvapenie"><X size={20} aria-hidden="true" /></button>
       </div>
       {loading
-        ? <p role="status">Preparing your surprise...</p>
+        ? <p role="status">Pripravujeme tvoje prekvapenie...</p>
         : loadError
           ? <div role="alert" className="space-y-4">
-              <p>Could not load this surprise. Try again.</p>
-              <button type="button" className="calendar-action" onClick={onRetry}>Try again</button>
+              <p>Prekvapenie sa nepodarilo načítať. Skús to znova.</p>
+              <button type="button" className="calendar-action" onClick={onRetry}>Skúsiť znova</button>
             </div>
           : opened
             ? <div className="space-y-5" aria-live="polite"><AdventEntryView day={day} entry={entry} /></div>
@@ -203,6 +216,7 @@ export default function AdventPage() {
   const [content, setContent] = useState<AdventContent | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [retry, setRetry] = useState(0)
+  const [today] = useState(() => new Date())
 
   useEffect(() => {
     try {
@@ -228,11 +242,12 @@ export default function AdventPage() {
     setRetry((current) => current + 1)
   }
 
-  const nextDay = nextUnopenedDay(opened)
   const openedCount = Array.from({ length: ADVENT_DAYS }, (_, index) => index + 1)
     .filter((day) => opened.has(day)).length
   const reveal = (day: number) => setOpened((current) => {
-    if (day !== nextUnopenedDay(current)) return current
+    const entry = content?.[day]
+    const unlockDate = entry && 'unlockDate' in entry ? entry.unlockDate : undefined
+    if (!isAdventDayAvailable(day, today, unlockDate)) return current
     const next = new Set(current).add(day)
     saveOpened(next)
     return next
@@ -243,9 +258,9 @@ export default function AdventPage() {
       <div className="calendar-page">
         <div className="calendar-heading">
           <div className="calendar-heading-copy">
-            <span className="hero-eyebrow"><Sparkles size={13} aria-hidden="true" /> THE MOST MAGICAL TIME</span>
-            <h1 className="section-title">A little magic,<br /><em>every day.</em></h1>
-            <p className="hero-copy">Twenty-four little surprises, wrapped up just for you.</p>
+            <span className="hero-eyebrow"><Sparkles size={13} aria-hidden="true" /> NAJČAROVNEJŠIE OBDOBIE</span>
+            <h1 className="section-title" lang="en">A little magic,<br /><em>every day.</em></h1>
+            <p className="hero-copy">Malé prekvapenia  len pre teba Ninka</p>
           </div>
           <svg className="hero-illustration" viewBox="0 0 170 190" fill="none" aria-hidden="true">
             <circle cx="87" cy="93" r="72" fill="#F6E8C9" fillOpacity=".08" />
@@ -265,31 +280,32 @@ export default function AdventPage() {
         </div>
         <div className="calendar-section-heading">
           <div>
-            <span className="calendar-kicker">A LITTLE JOY AWAITS</span>
-            <h2>Your calendar</h2>
+            <span className="calendar-kicker" lang="en">A LITTLE JOY AWAITS</span>
+            <h2>Ninkin kalendár</h2>
           </div>
-          <span className="calendar-count" aria-label={`${openedCount} of ${ADVENT_DAYS} days opened`}>{openedCount} <span>/ {ADVENT_DAYS}</span></span>
+          <span className="calendar-count" aria-label={`Otvorených dní: ${openedCount} z ${ADVENT_DAYS}`}>{openedCount} <span>/ {ADVENT_DAYS}</span></span>
         </div>
-        <p className="calendar-instruction">Find and open the days in order.</p>
-        {content === null && !loadError && <p role="status">Preparing your calendar...</p>}
+        {content === null && !loadError && <p role="status">Pripravujeme tvoj kalendár...</p>}
         {loadError && (
           <div role="alert" className="empty-state space-y-4">
-            <p>Could not load the calendar content. Check advent-calendar.json and try again.</p>
-            <button type="button" className="calendar-action" onClick={retryLoading}>Try again</button>
+            <p>Obsah kalendára sa nepodarilo načítať. Skontroluj advent-calendar.json a skús to znova.</p>
+            <button type="button" className="calendar-action" onClick={retryLoading}>Skúsiť znova</button>
           </div>
         )}
         <div className="door-grid">
           {dayOrder.map((day) => {
             const wasOpened = opened.has(day)
-            const locked = !wasOpened && day !== nextDay
+            const entry = content?.[day]
+            const unlockDate = entry && 'unlockDate' in entry ? entry.unlockDate : undefined
+            const locked = !wasOpened && !isAdventDayAvailable(day, today, unlockDate)
             return (
               <button type="button" key={day} disabled={locked} onClick={() => setSelected(day)}
-                aria-label={`Day ${day}: ${wasOpened ? 'opened, view surprise' : locked ? `locked, open day ${nextDay} first` : 'scratch to reveal surprise'}`}
+                aria-label={`Deň ${day}: ${wasOpened ? 'otvorené, pozrieť prekvapenie' : locked ? `zamknuté do ${unlockDate ?? 'určeného dňa'}` : 'zotri a odhaľ prekvapenie'}`}
                 className={`day-door ${wasOpened ? 'is-opened' : locked ? 'is-locked' : 'is-available'}`}>
                 <span className="door-status-icon" aria-hidden="true">{wasOpened ? <Check size={14} /> : locked ? <LockKeyhole size={14} /> : <Sparkles size={14} />}</span>
-                <span className="door-label">DAY</span>
+                <span className="door-label" lang="en">DAY</span>
                 <span className="door-number">{day}</span>
-                <span className="door-state">{wasOpened ? 'Opened' : locked ? 'Locked' : 'Open me'}</span>
+                <span className="door-state">{wasOpened ? 'Otvorené' : locked ? 'Zamknuté' : 'Otvor ma'}</span>
               </button>
             )
           })}

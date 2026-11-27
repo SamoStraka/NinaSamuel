@@ -1,12 +1,15 @@
 export const ADVENT_DAYS = 24
 
-export type AdventType = 'poem' | 'link' | 'image' | 'audio' | 'challenge' | 'riddle' | 'coupon' | 'joke' | 'fact'
+export type AdventType = 'poem' | 'link' | 'image' | 'audio' | 'challenge' | 'riddle' | 'coupon' | 'joke' | 'fact' | 'quote'
 export type AdventEntry =
   | { type: 'poem' | 'link' | 'image' | 'audio' | 'challenge' | 'fact'; content: string }
   | { type: 'riddle'; content: string; answer: string | null }
   | { type: 'joke'; content: string; punchline: string | null }
   | { type: 'coupon'; content: string; image: string | null }
+  | { type: 'quote'; content: string; author: string | null }
 export type AdventContent = Record<number, AdventEntry>
+
+type AdventEntryWithUnlockDate = AdventEntry & { unlockDate?: string }
 
 export function nextUnopenedDay(opened: ReadonlySet<number>): number | null {
   for (let day = 1; day <= ADVENT_DAYS; day++) {
@@ -14,6 +17,30 @@ export function nextUnopenedDay(opened: ReadonlySet<number>): number | null {
   }
   return null
 }
+
+function parseDateOnly(value: unknown): { year: number; month: number; day: number } | null {
+  if (typeof value !== 'string') return null
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim())
+  if (!match) return null
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const day = Number(match[3])
+  const date = new Date(year, month - 1, day)
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null
+  return { year, month, day }
+}
+
+export function isAdventDayAvailable(day: number, now: Date = new Date(), unlockDate?: unknown): boolean {
+  if (!Number.isInteger(day) || day < 1 || day > ADVENT_DAYS) return false
+  const configured = parseDateOnly(unlockDate)
+  const target = configured ?? { year: now.getFullYear(), month: 12, day }
+  const today = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() }
+  if (today.year !== target.year) return today.year > target.year
+  if (today.month !== target.month) return today.month > target.month
+  return today.day >= target.day
+}
+
+export const isDayAvailable = isAdventDayAvailable
 
 export function isValidDayOrder(value: unknown): value is number[] {
   return Array.isArray(value)
@@ -45,6 +72,7 @@ const TYPES: Record<string, AdventType> = {
   coupon: 'coupon',
   joke: 'joke',
   fact: 'fact',
+  quote: 'quote',
 }
 
 function addEntries(target: AdventContent, source: unknown) {
@@ -53,18 +81,30 @@ function addEntries(target: AdventContent, source: unknown) {
     const day = Number(key)
     if (!Number.isInteger(day) || day < 1 || day > ADVENT_DAYS) continue
     if (!value || typeof value !== 'object') continue
-    const { type, content, answer, image, punchline } = value as Record<string, unknown>
+    const { type, content, answer, image, punchline, author, unlockDate, date } = value as Record<string, unknown>
+    const configuredDate = typeof unlockDate === 'string'
+      ? unlockDate
+      : typeof date === 'string'
+        ? date
+        : null
     const normalized = typeof type === 'string' ? TYPES[type.trim().toLowerCase()] : undefined
     if (normalized && typeof content === 'string' && content.trim()) {
+      let entry: AdventEntry
       if (normalized === 'riddle') {
-        target[day] = { type: normalized, content, answer: typeof answer === 'string' && answer.trim() ? answer : null }
+        entry = { type: normalized, content, answer: typeof answer === 'string' && answer.trim() ? answer : null }
       } else if (normalized === 'joke') {
-        target[day] = { type: normalized, content, punchline: typeof punchline === 'string' && punchline.trim() ? punchline : null }
+        entry = { type: normalized, content, punchline: typeof punchline === 'string' && punchline.trim() ? punchline : null }
       } else if (normalized === 'coupon') {
-        target[day] = { type: normalized, content, image: typeof image === 'string' && image.trim() ? image : null }
+        entry = { type: normalized, content, image: typeof image === 'string' && image.trim() ? image : null }
+      } else if (normalized === 'quote') {
+        entry = { type: normalized, content, author: typeof author === 'string' && author.trim() ? author : null }
       } else {
-        target[day] = { type: normalized, content }
+        entry = { type: normalized, content }
       }
+      if (configuredDate && parseDateOnly(configuredDate)) {
+        ;(entry as AdventEntryWithUnlockDate).unlockDate = configuredDate.trim()
+      }
+      target[day] = entry
     }
   }
 }

@@ -6,15 +6,15 @@ export function FestiveShell({ children }: { children: ReactNode }) {
     <div className="festive-shell">
       <header className="site-header">
         <div className="site-header-inner">
-          <a href="/" className="brand-link" aria-label={`${import.meta.env.VITE_APP_NAME.trim()} home`}>
+          <a href="/" className="brand-link" aria-label={`${import.meta.env.VITE_APP_NAME.trim()} – domov`}>
             <span className="brand-mark"><TreePine size={20} strokeWidth={1.8} aria-hidden="true" /></span>
-            <span>{import.meta.env.VITE_APP_NAME.trim()}<small>A LITTLE DECEMBER MAGIC</small></span>
+            <span>{import.meta.env.VITE_APP_NAME.trim()}<small lang="en">A LITTLE DECEMBER MAGIC</small></span>
           </a>
           <span className="header-decoration" aria-hidden="true">✦</span>
         </div>
       </header>
       <main className="page-content">{children}</main>
-      <footer className="site-footer">Made for moments worth keeping <Heart size={13} fill="currentColor" aria-hidden="true" /></footer>
+      <footer className="site-footer"><span lang="en">Made for moments worth keeping</span> <Heart size={13} fill="currentColor" aria-hidden="true" /></footer>
     </div>
   )
 }

@@ -3,9 +3,9 @@
 A lightweight, frontend-only advent calendar. It has no login, backend, API,
 or database. The 24 doors load content from `public/advent-calendar.json`;
 opened days are remembered in the browser's `localStorage`.
-The doors appear in a randomized order that is saved on the device. Open day
-1 first, then each subsequent day in sequence; previously opened days remain
-available to revisit. This is based on opening order, not the current date.
+The doors appear in a randomized order that is saved on the device. By
+default, day N opens on December N and previously opened days remain available
+to revisit. A door also cannot be opened before that date.
 
 ## Run locally
 
@@ -36,8 +36,9 @@ Edit `public/advent-calendar.json` and use one entry per day:
 ```
 
 Supported types are `poem`, `link`, `image` (`online_image` is also accepted),
-`audio`, `challenge`, `riddle`, `coupon`, `joke`, and `fact`. `content` holds the text or
-media URL; riddles also need an `answer`, jokes need a `punchline`, and coupons need an `image` path
+`audio`, `challenge`, `riddle`, `coupon`, `joke`, `fact`, and `quote`. `content` holds the text or
+media URL; riddles also need an `answer`, jokes need a `punchline`, quotes may include an `author`,
+and coupons need an `image` path
 for their downloadable badge. Put local images and audio under `public/` and
 use root-relative paths, such as `/audio/message.mp3` or `/images/badge.png`.
 Coupon badges must be local so they can be downloaded. Links and remote
